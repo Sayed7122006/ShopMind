@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FINDO | online shopping</title>
+
+    <link rel="icon" href="img/icon.png">
+
+    <link rel="stylesheet" href="CSS/style.css">
+
+    <!-- Link Swiper's CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@14.0.1/swiper-bundle.min.css"
+    />
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
+</head>
+<body>
+      
+    <header>
+        <div class="top_header">
+            <div class="container">
+                <a href="#" class="logo"><img src="img/logo.png" width="150" alt="Logo"></a>
+
+                <form action="" class="search_box">
+                    <div class="select_box">
+                        <select id="category" name="category">
+                           <option value="All Categories">All Categories</option>
+                           <option value="Electronics">Electronics</option>
+                           <option value="Fashion">Fashion</option>
+                           <option value="Beauty & Health">Beauty & Health</option>
+                           <option value="Home & Living">Home & Living</option>
+                           <option value="Sports & outdoors">Sports & outdoors</option>
+                           <option value="Toys & Hobbies">Toys & Hobbies</option>
+                        </select>
+                    </div>
+                
+                    <input type="text" name="search" id="search" placeholder="search for products" required>
+                    
+                    <button type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+
+                <div class="header_icons">
+                    <div class="icon">
+                        <a href="#"><i class="fa-regular fa-heart"></i>
+                            <span class="count_favouite">0</span>
+                        </a>
+                    </div>
+                    <div class="icon">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="count_item_header">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom_header">
+            <div class="container">
+                <nav class="nav">
+                    <!-- قائمة الـ 3 شُرط التي تفتح عند وضع الماوس وتختفي عند إزالته -->
+                       <div class="category_dropdown">
+                        <div class="category_btn">
+                            <i class="fa-solid fa-bars"></i>
+                            <p>Brows category</p>
+                            <i class="fa-solid fa-angle-down"></i>
+                        </div>
+
+                        <ul class="nav_links">
+                           <li><a href="#" class="active"><i class="fas fa-home"></i> Home</a></li>
+                           <li><a href="#"><i class="fas fa-tags"></i> Deals</a></li>
+                           <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
+                           <li><a href="#"><i class="fas fa-phone"></i> Contact Us</a></li>
+                        </ul>
+                    </div>
+                </nav>
+
+                <!-- أزرار تسجيل الدخول في مكانها المعروف -->
+                <div class="login_signup_btns">
+                    <a href="#" class="btn">login <i class="fa-solid fa-right-to-bracket"></i></a>
+                    <a href="#" class="btn">sign up <i class="fa-solid fa-user-plus"></i></a>
+                </div>
+            </div> 
+        </div>
+    </header>
+
+    <div class="slider">
+      <div class="container">
+
+        <div class="slide-swp mySwiper">
+         <div class="swiper-wrapper">
+
+    <div class="swiper-slide">
+        <img src="img/banner_home2.jpeg" alt="Product 1">
+    </div>
+
+    
+    
+
+    <div class="swiper-slide">
+        <img src="img/banner_box4.jpeg" alt="Product 3">
+    </div>
+
+   
+
+    <div class="swiper-slide">
+        <img src="img/banner_box5.jpeg" alt="Product 5">
+    </div>
+
+</div>
+      <div class="swiper-pagination"></div>
+    </div>
+    <div class="side-banner">
+        <img src="img/banner_home1.jpeg" alt="smart watch">
+        <div class="side-banner-text">
+            <h3>smart watch</h3>
+            <p>price:$45.50</p>
+        </div>
+    </div>
+    </div>
+
+    </div>
+    <!-- قسم عرض المنتجات المقسمة تحت السلايدر -->
+    <div class="products-grid-section">
+        <div class="product-card">
+            <img src="img/banner_box1.jpeg" alt="Product 1">
+            <h3>New Generation Smartphone</h3>
+            <p> Designed for better performance</p>
+            <p class="price">price:$299</p>
+        </div>
+        
+        <div class="product-card">
+            <img src="img/banner3_3.jpeg" alt="Product 2">
+            <h3>Wirless _Headphone</h3>
+            <p>Hight_definition sound With active noise cancellation</p>
+                 <p class="price">price:$32</p>
+        </div>
+
+        <div class="product-card">
+            <img src="img/banner3_1.jpeg" alt="Product 3">
+            <h3>ultra_slim performance laptop</h3>
+            <p>powerful processing with a syunning displayy</p>
+                 <p class="price">price:$800</p>
+           
+        </div>
+    </div>
+    
+
+
+
+       
+       <!-- Swiper JS -->
+        <script src="https://cdn.jsdelivr.net/npm/swiper@14.0.1/swiper-bundle.min.js"></script>
+         <script src="main.js"></script>
+</body>
+</html> 

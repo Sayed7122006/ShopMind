@@ -1,0 +1,501 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+/* =========================
+   RESET
+========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+    font-family: "Inter", sans-serif;
+}
+
+:root {
+    --main_color: #1b3b32;
+    --p_color: #7b7b7b;
+    --bg_color: #f9f8f6;
+    --white_color: #fff;
+    --color_heading: #121416;
+    --border_color: #e5e5d5;
+    --gold: #d4af37;
+}
+
+body {
+    background: var(--bg_color);
+}
+
+p {
+    color: var(--p_color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--color_heading);
+    font-family: "DM Sans", sans-serif;
+}
+
+span {
+    color: var(--main_color);
+}
+
+.container {
+    width: 90%;
+    max-width: 1350px;
+    margin: auto;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    background: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+
+/* =========================
+   TOP HEADER
+========================= */
+
+header .top_header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    padding: 15px 0;
+}
+
+
+/* LOGO */
+
+header .top_header .logo {
+    width: 180px;
+    flex-shrink: 0;
+}
+
+header .top_header .logo img {
+    width: 100%;
+    display: block;
+}
+
+
+/* =========================
+   SEARCH BOX
+========================= */
+
+header .search_box {
+    width: 600px;
+    height: 60px;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+
+    background: #f9f8f6;
+    border: 2px solid var(--main_color);
+    border-radius: 50px;
+    padding: 5px;
+}
+
+
+/* CATEGORY */
+
+header .search_box .select_box {
+    flex-shrink: 0;
+}
+
+header .search_box .select_box select {
+    background: var(--main_color);
+    color: #fff;
+
+    border: none;
+    outline: none;
+    border-radius: 35px;
+
+    padding: 14px 20px;
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+/* SEARCH INPUT */
+
+header .search_box input {
+    flex: 1;
+    width: 100%;
+
+    border: none;
+    outline: none;
+    background: transparent;
+
+    padding: 10px 15px;
+    font-size: 16px;
+    color: var(--color_heading);
+}
+
+header .search_box input::placeholder {
+    color: var(--p_color);
+}
+
+
+/* SEARCH BUTTON */
+
+header .search_box button {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: var(--main_color);
+    color: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   HEADER ICONS
+========================= */
+
+header .header_icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+header .header_icons .icon_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    color: var(--color_heading);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+header .header_icons .icon_item i {
+    font-size: 20px;
+    margin-bottom: 3px;
+}
+
+header .header_icons > i {
+    font-size: 22px;
+    color: var(--main_color);
+}
+
+
+/* =========================
+   BOTTOM HEADER
+========================= */
+
+header .bottom_header {
+    border-top: 1px solid var(--border_color);
+    padding: 10px 0;
+}
+
+header .bottom_header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+/* =========================
+   BROWSE CATEGORY
+========================= */
+
+.category_dropdown {
+    position: relative;
+}
+
+.category_btn,
+.browse_btn {
+    background: var(--main_color);
+    color: #fff !important;
+
+    padding: 10px 18px;
+    border-radius: 6px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.category_btn:hover,
+.browse_btn:hover {
+    background: #294d42;
+}
+
+
+/* =========================
+   CATEGORY DROPDOWN
+========================= */
+
+header .nav_links {
+    display: none;
+
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+
+    width: 220px;
+
+    background: #fff;
+    border: 1px solid var(--border_color);
+    border-radius: 8px;
+
+    padding: 8px 0;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,.12);
+
+    z-index: 1000;
+}
+
+.category_dropdown:hover .nav_links {
+    display: flex;
+    flex-direction: column;
+}
+
+header .nav_links li {
+    width: 100%;
+}
+
+header .nav_links li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    padding: 11px 15px;
+
+    color: var(--main_color);
+    font-size: 15px;
+
+    transition: .2s;
+}
+
+header .nav_links li a i {
+    color: var(--gold);
+}
+
+header .nav_links li a:hover {
+    background: #f4f1ea;
+    color: var(--gold);
+}
+
+
+/* =========================
+   LOGIN / SIGN UP
+========================= */
+
+.login_signup_btns {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.login_signup_btns .btn {
+    background: var(--main_color);
+    color: #fff !important;
+
+    padding: 8px 16px;
+    border-radius: 6px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    font-weight: 600;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1000px) {
+
+    header .top_header .container {
+        gap: 15px;
+    }
+
+    header .top_header .logo {
+        width: 150px;
+    }
+
+    header .search_box {
+        width: 500px;
+    }
+
+    header .header_icons {
+        gap: 12px;
+    }
+}
+
+
+@media (max-width: 750px) {
+
+    header .top_header .container {
+        flex-wrap: wrap;
+    }
+
+    header .search_box {
+        order: 3;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    header .bottom_header {
+        display: none;
+    }
+}
+.category_dropdown{position:relative}
+
+.category_btn,.browse_btn{
+  background:#1b3b32!important;
+  color:#fff!important;
+  padding:10px 18px;
+  border:0;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.category_dropdown .nav_links{
+  display:none;
+  position:absolute;
+  top:100%;
+  left:0;
+  width:220px;
+  background:#fff;
+  padding:10px 0;
+  border:1px solid #e0d8c3;
+  border-radius:6px;
+  box-shadow:0 4px 12px #0002;
+  z-index:1000;
+}
+
+.category_dropdown .nav_links.show{
+  display:flex!important;
+  flex-direction:column;
+} .category_dropdown{
+  position:relative;
+}
+.slider {
+    margin-top: 150px;
+    padding: 20px 0;
+}
+
+.slide-swp {
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+}
+
+.swiper-wrapper {
+    height: 100%;
+}
+
+.swiper-slide {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f4f1ea !important;
+    color: #1b3b32;
+    font-size: 30px;
+    font-weight: 700;
+}
+.mySwiper {
+    width: 80%;
+   max-width: 1200px;
+    height: 350px;
+    margin: 0 auto;
+}
+
+.swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+} 
+/* بنخلي الـ container يوزع العناصر جنبه بـ Flex */
+.slider .container {
+    display: flex;
+    gap: 20px; /* مسافة بين السلايدر والصورة الجانبية */
+    align-items: center;
+}
+
+/* بنخلي السلايدر ياخد المساحة الأكبر */
+.slider .slide-wp {
+    flex: 3;
+}
+
+/* بنخلي الصورة الجانبية تاخد المساحة الباقية جنب السلايدر */
+.slider .side-banner {
+    flex: 1;
+    height: 300px; /* نفس ارتفاع السلايدر عشان يكونوا متساوين */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.slider .side-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+} /* تنسيق قسم المنتجات تحت السلايدر */
+.products-grid-section {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 30px;
+    padding: 0 20px;
+}
+
+.product-card {
+    background-color: #fff;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    flex: 1;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.product-card img {
+    max-width: 100%;
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.product-card h3 {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.product-card p {
+    font-size: 14px;
+    color: #666;
+}
