@@ -3,158 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FINDO | online shopping</title>
-
-    <link rel="icon" href="img/icon.png">
-
+    <title>FINDO | Online Shopping</title>
+    <link rel="icon" type="image/jpeg" href="img/new_logo.jpg">
     <link rel="stylesheet" href="CSS/style.css">
-
-    <!-- Link Swiper's CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@14.0.1/swiper-bundle.min.css"
-    />
-
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-      
-    <header>
-        <div class="top_header">
-            <div class="container">
-                <a href="#" class="logo"><img src="img/logo.png" width="150" alt="Logo"></a>
 
-                <form action="" class="search_box">
-                    <div class="select_box">
-                        <select id="category" name="category">
-                           <option value="All Categories">All Categories</option>
-                           <option value="Electronics">Electronics</option>
-                           <option value="Fashion">Fashion</option>
-                           <option value="Beauty & Health">Beauty & Health</option>
-                           <option value="Home & Living">Home & Living</option>
-                           <option value="Sports & outdoors">Sports & outdoors</option>
-                           <option value="Toys & Hobbies">Toys & Hobbies</option>
-                        </select>
-                    </div>
-                
-                    <input type="text" name="search" id="search" placeholder="search for products" required>
-                    
-                    <button type="submit">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                </form>
+<!-- ═══════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════ -->
+<header>
 
-                <div class="header_icons">
-                    <div class="icon">
-                        <a href="#"><i class="fa-regular fa-heart"></i>
-                            <span class="count_favouite">0</span>
-                        </a>
-                    </div>
-                    <div class="icon">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        <span class="count_item_header">0</span>
-                    </div>
+    <!-- ── TOP HEADER ── -->
+    <div class="top_header">
+        <div class="container">
+
+            <a href="index.html" class="logo">
+                <img src="img/new_logo.jpg" alt="FINDO Logo">
+            </a>
+
+            <form class="search_box" id="search-form" autocomplete="off">
+                <div class="select_box">
+                    <select id="category" name="category">
+                        <option value="All Categories">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="mobiles">Mobiles</option>
+                        <option value="appliances">Appliances</option>
+                    </select>
                 </div>
+                <input type="text" id="search" name="search" placeholder="Search for products…">
+                <button type="submit" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+
+            <div class="header_icons">
+                <div class="icon" id="wishlist-icon" title="Wishlist">
+                    <i class="fa-regular fa-heart"></i>
+                    <span class="count_favouite">0</span>
+                </div>
+                <div class="icon" id="cart-icon" title="Cart">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="count_item_header">0</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ── BOTTOM HEADER ── -->
+    <div class="bottom_header">
+        <div class="container">
+
+            <nav class="nav">
+                <div class="category_dropdown">
+                    <div class="category_btn" id="category-btn">
+                        <i class="fa-solid fa-bars"></i>
+                        <span>Browse Categories</span>
+                        <i class="fa-solid fa-angle-down"></i>
+                    </div>
+                    <ul class="nav_links" id="nav-menu">
+                        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#products-section"><i class="fas fa-tags"></i> Deals</a></li>
+                        <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> Contact Us</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <div class="login_signup_btns">
+                <button id="btn-login" class="btn btn-login" type="button">
+                    Login <i class="fa-solid fa-right-to-bracket"></i>
+                </button>
+                <button id="btn-signup" class="btn btn-signup" type="button">
+                    Sign Up <i class="fa-solid fa-user-plus"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<!-- ═══════════════════════════════════════════
+     HERO SLIDER
+════════════════════════════════════════════ -->
+<div class="slider">
+    <div class="container">
+
+        <div class="mySwiper swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="img/banner_home2.jpeg" alt="Banner 1"></div>
+                <div class="swiper-slide"><img src="img/banner_box4.jpeg"  alt="Banner 2"></div>
+                <div class="swiper-slide"><img src="img/banner_box5.jpeg"  alt="Banner 3"></div>
+                <div class="swiper-slide"><img src="img/banner_home3.jpeg" alt="Banner 4"></div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+
+        <div class="side-banner">
+            <img src="img/banner_home1.jpeg" alt="Smart Watch">
+            <div class="side-banner-text">
+                <h3>Smart Watch</h3>
+                <p>From <strong>$45.50</strong></p>
+                <a href="#products-section" class="side-banner-btn">Shop Now</a>
             </div>
         </div>
 
-        <div class="bottom_header">
-            <div class="container">
-                <nav class="nav">
-                    <!-- قائمة الـ 3 شُرط التي تفتح عند وضع الماوس وتختفي عند إزالته -->
-                       <div class="category_dropdown">
-                        <div class="category_btn">
-                            <i class="fa-solid fa-bars"></i>
-                            <p>Brows category</p>
-                            <i class="fa-solid fa-angle-down"></i>
-                        </div>
-
-                        <ul class="nav_links">
-                           <li><a href="#" class="active"><i class="fas fa-home"></i> Home</a></li>
-                           <li><a href="#"><i class="fas fa-tags"></i> Deals</a></li>
-                           <li><a href="#"><i class="fas fa-info-circle"></i> About Us</a></li>
-                           <li><a href="#"><i class="fas fa-phone"></i> Contact Us</a></li>
-                        </ul>
-                    </div>
-                </nav>
-
-                <!-- أزرار تسجيل الدخول في مكانها المعروف -->
-                <div class="login_signup_btns">
-                    <a href="#" class="btn">login <i class="fa-solid fa-right-to-bracket"></i></a>
-                    <a href="#" class="btn">sign up <i class="fa-solid fa-user-plus"></i></a>
-                </div>
-            </div> 
-        </div>
-    </header>
-
-    <div class="slider">
-      <div class="container">
-
-        <div class="slide-swp mySwiper">
-         <div class="swiper-wrapper">
-
-    <div class="swiper-slide">
-        <img src="img/banner_home2.jpeg" alt="Product 1">
     </div>
-
-    
-    
-
-    <div class="swiper-slide">
-        <img src="img/banner_box4.jpeg" alt="Product 3">
-    </div>
-
-   
-
-    <div class="swiper-slide">
-        <img src="img/banner_box5.jpeg" alt="Product 5">
-    </div>
-
 </div>
-      <div class="swiper-pagination"></div>
+
+<!-- ═══════════════════════════════════════════
+     FEATURED CARDS
+════════════════════════════════════════════ -->
+<div class="products-grid-section">
+    <div class="product-card">
+        <img src="img/banner_box1.jpeg" alt="Smartphone">
+        <h3>New Generation Smartphone</h3>
+        <p>Designed for better performance</p>
+        <p class="price">$299</p>
     </div>
-    <div class="side-banner">
-        <img src="img/banner_home1.jpeg" alt="smart watch">
-        <div class="side-banner-text">
-            <h3>smart watch</h3>
-            <p>price:$45.50</p>
+    <div class="product-card">
+        <img src="img/banner3_3.jpeg" alt="Headphone">
+        <h3>Wireless Headphone</h3>
+        <p>High-definition sound &amp; noise cancellation</p>
+        <p class="price">$32</p>
+    </div>
+    <div class="product-card">
+        <img src="img/banner3_1.jpeg" alt="Laptop">
+        <h3>Ultra-Slim Laptop</h3>
+        <p>Powerful processing with stunning display</p>
+        <p class="price">$800</p>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PRODUCTS SECTION
+════════════════════════════════════════════ -->
+<section class="products-section" id="products-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Our Products</h2>
+            <p>Discover our best-selling items</p>
+        </div>
+        <div class="products-grid" id="products-grid">
+            <!-- populated by main.js -->
         </div>
     </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     CART SIDEBAR
+════════════════════════════════════════════ -->
+<div class="cart-overlay" id="cart-overlay"></div>
+<aside class="cart-sidebar" id="cart-sidebar" aria-label="Shopping Cart">
+    <div class="cart-header">
+        <h3><i class="fa-solid fa-cart-shopping"></i> Your Cart</h3>
+        <button class="cart-close-btn" id="cart-close" aria-label="Close cart">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
     </div>
-
+    <div class="cart-list" id="cart-list">
+        <p class="empty-msg">Your cart is empty 🛒</p>
     </div>
-    <!-- قسم عرض المنتجات المقسمة تحت السلايدر -->
-    <div class="products-grid-section">
-        <div class="product-card">
-            <img src="img/banner_box1.jpeg" alt="Product 1">
-            <h3>New Generation Smartphone</h3>
-            <p> Designed for better performance</p>
-            <p class="price">price:$299</p>
+    <div class="cart-footer">
+        <div class="cart-total-row">
+            <span>Total:</span>
+            <span id="cart-total">$0.00</span>
         </div>
-        
-        <div class="product-card">
-            <img src="img/banner3_3.jpeg" alt="Product 2">
-            <h3>Wirless _Headphone</h3>
-            <p>Hight_definition sound With active noise cancellation</p>
-                 <p class="price">price:$32</p>
-        </div>
+        <button class="checkout-btn" type="button">
+            Checkout <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+</aside>
 
-        <div class="product-card">
-            <img src="img/banner3_1.jpeg" alt="Product 3">
-            <h3>ultra_slim performance laptop</h3>
-            <p>powerful processing with a syunning displayy</p>
-                 <p class="price">price:$800</p>
-           
+<!-- ═══════════════════════════════════════════
+     MODAL OVERLAY
+════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay"></div>
+
+<!-- LOGIN MODAL -->
+<div class="modal" id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
+    <button class="modal-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-logo"><img src="img/new_logo.jpg" alt="FINDO Logo"></div>
+    <h2 id="login-title">Welcome Back 👋</h2>
+    <p>Sign in to your account</p>
+    <form id="login-form" novalidate>
+        <div class="form-group">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" placeholder="you@email.com" required>
+        </div>
+        <div class="form-group">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="modal-submit-btn">
+            Login <i class="fa-solid fa-right-to-bracket"></i>
+        </button>
+    </form>
+    <p class="modal-switch">Don't have an account? <a href="#" id="to-signup">Sign Up</a></p>
+</div>
+
+<!-- SIGN UP MODAL -->
+<div class="modal" id="signup-modal" role="dialog" aria-modal="true" aria-labelledby="signup-title">
+    <button class="modal-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-logo"><img src="img/new_logo.jpg" alt="FINDO Logo"></div>
+    <h2 id="signup-title">Create Account 🚀</h2>
+    <p>Join us today</p>
+    <form id="signup-form" novalidate>
+        <div class="form-group">
+            <label for="signup-name">Full Name</label>
+            <input type="text" id="signup-name" placeholder="Your Name" required>
+        </div>
+        <div class="form-group">
+            <label for="signup-email">Email</label>
+            <input type="email" id="signup-email" placeholder="you@email.com" required>
+        </div>
+        <div class="form-group">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="modal-submit-btn">
+            Create Account <i class="fa-solid fa-user-plus"></i>
+        </button>
+    </form>
+    <p class="modal-switch">Already have an account? <a href="#" id="to-login">Login</a></p>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TOAST
+════════════════════════════════════════════ -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="img/new_logo.jpg" alt="FINDO">
+                <p>Your one-stop online shopping destination.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#products-section">Deals</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="#">Electronics</a></li>
+                    <li><a href="#">Mobiles</a></li>
+                    <li><a href="#">Appliances</a></li>
+                    <li><a href="#">Fashion</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 FINDO. All rights reserved.</p>
+            <img src="img/payment_method.png" alt="Payment Methods">
         </div>
     </div>
-    
+</footer>
 
-
-
-       
-       <!-- Swiper JS -->
-        <script src="https://cdn.jsdelivr.net/npm/swiper@14.0.1/swiper-bundle.min.js"></script>
-         <script src="main.js"></script>
+<!-- ═══════════════════════════════════════════
+     SCRIPTS  (at bottom → DOM is ready)
+════════════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="main.js"></script>
 </body>
-</html> 
+</html>
