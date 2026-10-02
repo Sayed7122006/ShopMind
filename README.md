@@ -1,19 +1,30 @@
 # ShopMind 🛒
 
-An e-commerce web app built as a team project. The frontend is done — backend is being handled by another team member using PHP.
+An e-commerce web app built as a team project. Frontend and admin dashboard are done — backend integration is in progress.
 
 ---
 
 ## Project Structure
 
 ```
-Ecommerce-Website/
+ShopMind/
 ├── frontend/
 │   ├── CSS/
 │   ├── img/
-│   ├── index.html
+│   ├── index.php
 │   ├── main.js
-│   └── products.json
+│   ├── products.json
+│   ├── cart_api.php
+│   ├── products_api.php
+│   └── about.php
+├── backend/
+│   ├── account/
+│   ├── admin_sidebar/
+│   ├── fun/
+│   ├── includes/
+│   ├── SQL/
+│   ├── vendor_sidebar/
+│   └── index.php
 ├── .gitignore
 └── README.md
 ```
@@ -22,34 +33,38 @@ Ecommerce-Website/
 
 ## Tech Stack
 
-- **Frontend:** HTML, CSS, Vanilla JS
-- **Backend:** PHP *(in progress — handled separately)*
-- **Libraries:** Swiper.js, Font Awesome
+- **Frontend:** HTML5, CSS3, JavaScript (Vanilla), Swiper.js, Font Awesome
+- **Backend:** PHP, MySQL
+- **Styling:** SCSS, Gulp
+- **Tools:** Git, VS Code, Live Server
 
 ---
 
-## Features (Frontend)
+## Features
 
-- Products loaded dynamically from JSON
+- Products loaded dynamically (JSON → MySQL)
 - Filter by category + live search
-- Cart sidebar with item count
-- Wishlist with heart toggle
+- Cart with sidebar + database sync
+- Wishlist with toggle
 - Login / Sign Up modals
 - Toast notifications
 - Auto-playing banner slider
 - Responsive layout
+- Admin dashboard (products, orders, users, brands, categories)
+- Vendor sidebar
+- User account management
 
 ---
 
 ## Running Locally
 
-Open `frontend/index.html` with **Live Server** in VS Code.
-Make sure you use a local server — not just double-clicking the file — so the JSON fetch works.
+Open `frontend/index.php` with a local server (XAMPP / Live Server).
+Direct file open won't work — needs a server for PHP and fetch requests.
 
 ---
 
 ## Notes
 
-- Backend integration is coming later
-- The `frontend/` folder contains everything for the UI
-- `.gitignore` covers `node_modules/` and `.env`
+- SQL schema is in `backend/SQL/`
+- DB config goes in `backend/fun/db_connection.php`
+- `.gitignore` covers `node_modules/`, `vendor/`, and `.env`
