@@ -1,0 +1,10 @@
+<?php
+session_start(); require_once __DIR__ . '/fun/db_connection.php';
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'] ?? '', ['admin','vendor'], true)) { header('Location: /ShopMind-main_dashbord/account/login.php'); exit; }
+function h($v){ return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); }
+$role=$_SESSION['role']; $uid=(int)$_SESSION['user_id'];
+include __DIR__.'/includes/header.php'; include __DIR__.'/includes/sidebar.php';
+?>
+<div id="content-wrapper" class="d-flex flex-column"><div id="content"><?php include __DIR__.'/includes/topbar.php'; ?><div class="container-fluid py-4">
+<style>.sm-panel{background:#fff;border-radius:12px;padding:22px;box-shadow:0 2px 14px #0000000b}.sm-table{width:100%;border-collapse:collapse}.sm-table th,.sm-table td{padding:11px;border-bottom:1px solid #eee;text-align:left}.sm-table th{background:#f8f9fc}.sm-btn{border:0;border-radius:6px;padding:7px 12px;background:#6c5ce7;color:white}.sm-field{padding:9px;border:1px solid #ddd;border-radius:6px;margin:4px;max-width:100%}</style>
+<?php if($role!=='vendor'){http_response_code(403);exit('Forbidden');}$sql="SELECT DISTINCT o.id,o.user_email,o.order_date,o.status FROM orders o JOIN order_items oi ON oi.order_id=o.id JOIN products p ON p.id=oi.product_id WHERE p.vendor_id=? ORDER BY o.order_date DESC";$s=mysqli_prepare($conn,$sql);mysqli_stmt_bind_param($s,'i',$uid);mysqli_stmt_execute($s);$r=mysqli_stmt_get_result($s); ?><h1 class="h3 mb-4">My Orders</h1><div class="sm-panel"><div class="table-responsive"><table class="sm-table"><tr><th>Order</th><th>Customer</th><th>Date</th><th>Status</th></tr><?php while($o=mysqli_fetch_assoc($r)): ?><tr><td>#<?=h($o['id'])?></td><td><?=h($o['user_email'])?></td><td><?=h($o['order_date'])?></td><td><?=h($o['status'])?></td></tr><?php endwhile; ?></table></div></div></div></div><?php include __DIR__.'/includes/footer.php'; ?></div>
