@@ -31,26 +31,26 @@ try {
 
     $products = [];
     while ($row = mysqli_fetch_assoc($result)) {
-        $imageData = null;
-        if (!empty($row['img'])) {
-            $bytes = $row['img'];
-            $mime = 'image/png';
-            if (function_exists('finfo_buffer')) {
-                $finfo = new finfo(FILEINFO_MIME_TYPE);
-                $detected = $finfo->buffer($bytes);
-                if (is_string($detected) && str_starts_with($detected, 'image/')) {
-                    $mime = $detected;
-                }
-            }
-            $imageData = 'data:' . $mime . ';base64,' . base64_encode($bytes);
+        $id = (int)$row['id'];
+        $imgIndex = $id - 1;
+        $localPath = "img/product/{$imgIndex}.png";
+        
+        if (file_exists(__DIR__ . '/' . $localPath)) {
+            $imageSrc = $localPath;
+        } elseif (file_exists(__DIR__ . "/img/product/{$id}.png")) {
+            $imageSrc = "img/product/{$id}.png";
+        } elseif (!empty($row['img']) && str_starts_with($row['img'], "\x89PNG")) {
+            $imageSrc = 'data:image/png;base64,' . base64_encode($row['img']);
+        } else {
+            $imageSrc = 'img/logo.png';
         }
 
         $products[] = [
-            'id' => (int)$row['id'],
+            'id' => $id,
             'name' => $row['name'],
             'price' => (float)$row['price'],
             'category' => $row['category'],
-            'img' => $imageData,
+            'img' => $imageSrc,
         ];
     }
 

@@ -1,0 +1,9 @@
+pandas
+numpy
+scikit-learn
+sentence-transformers
+sqlalchemy
+psycopg2-binary
+fastapi
+uvicorn[standard]
+pydantic

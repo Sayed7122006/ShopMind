@@ -12,6 +12,51 @@ let wishlist        = [];
 let currentCategory = 'All Categories';
 let currentSearch   = '';
 
+// ── ML API (Recommendation + Smart Search) ──────────────────────
+// Make sure the ML API is running locally first:
+//   uvicorn api:app --reload --port 8001
+const ML_API = "http://127.0.0.1:8001";
+
+// Calls the Smart Search endpoint. Returns an array of
+// {product_id, name, score} on success, or null if the API is
+// unreachable (so callers can fall back to local filtering).
+async function smartSearch(query) {
+    try {
+        const res = await fetch(`${ML_API}/search?q=${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error(`Search API returned ${res.status}`);
+        const data = await res.json();
+        return data.results;
+    } catch (err) {
+        console.warn('Smart search unavailable, falling back to local search.', err);
+        return null;
+    }
+}
+
+// Calls the Recommendation endpoint for a given user.
+// Returns an array of {product_id, name}, or [] on failure.
+async function getRecommendations(userId, topN = 5) {
+    try {
+        const res = await fetch(`${ML_API}/recommend/${userId}?top_n=${topN}`);
+        if (!res.ok) throw new Error(`Recommend API returned ${res.status}`);
+        const data = await res.json();
+        return data.recommendations || [];
+    } catch (err) {
+        console.warn('Recommendations unavailable.', err);
+        return [];
+    }
+}
+
+// The ML API only returns {product_id, name} — not the full product
+// object (image, price, category...). This looks each one up in
+// allProducts (loaded from products_api.php) so we can reuse the
+// existing renderProducts() function.
+function mapResultsToProducts(results) {
+    if (!results) return [];
+    return results
+        .map(r => allProducts.find(p => String(p.id) === String(r.product_id)))
+        .filter(Boolean); // drop any that aren't found locally
+}
+
 //  1. SWIPER SLIDER
 if (qs('.mySwiper')) {
     new Swiper('.mySwiper', {
@@ -52,20 +97,27 @@ function showToast(msg) {
     }, 3000);
 }
 
-//  4. LOAD PRODUCTS FROM JSON
+//  4. LOAD PRODUCTS (From MySQL API with JSON fallback)
 async function loadProducts() {
     try {
         const res = await fetch('products_api.php', { headers: { 'Accept': 'application/json' } });
         if (!res.ok) throw new Error(`Products API returned ${res.status}`);
         const data = await res.json();
-        if (!Array.isArray(data)) throw new Error(data.error || 'Invalid products response');
+        if (!Array.isArray(data) || data.length === 0) throw new Error(data.error || 'Empty products response');
         allProducts = data;
         await loadCartFromDatabase();
         renderProducts(allProducts);
     } catch (err) {
-        const grid = qs('#products-grid');
-        if (grid) grid.innerHTML =
-            '<p class="no-results">⚠️ Could not load products. Make sure XAMPP Apache and MySQL are running.</p>';
+        console.warn('products_api.php fallback to products.json:', err);
+        try {
+            const fallbackRes = await fetch('products.json');
+            allProducts = await fallbackRes.json();
+            renderProducts(allProducts);
+        } catch (jsonErr) {
+            const grid = qs('#products-grid');
+            if (grid) grid.innerHTML =
+                '<p class="no-results">⚠️ Could not load products. Make sure XAMPP Apache and MySQL are running.</p>';
+        }
     }
 }
 
@@ -84,6 +136,7 @@ function renderProducts(list) {
         const inCart    = cart.some(c => c.id === p.id);
         const saleBadge = p.old_price ? '<span class="badge">SALE</span>' : '';
         const oldPrice  = p.old_price ? `<span class="old-price">$${p.old_price}</span>` : '';
+        const imgSrc    = p.img || 'img/logo.png';
 
         return `
         <div class="product-item" data-id="${p.id}">
@@ -92,7 +145,7 @@ function renderProducts(list) {
                 <i class="${inWish ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
             </button>
             <div class="product-img">
-                <img src="${p.img || 'img/logo.png'}" alt="${p.name}" loading="lazy">
+                <img src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='img/logo.png';">
             </div>
             <div class="product-info">
                 <span class="product-category">${p.category}</span>
@@ -131,19 +184,43 @@ function getFiltered() {
 }
 function applyFilter() { renderProducts(getFiltered()); }
 
-// Search input
+// Search input — now uses Smart Search (ML API) when available,
+// and falls back to the original local filtering if the API is
+// unreachable or the search box is empty.
 const searchInput    = qs('#search');
 const categorySelect = qs('#category');
 const searchForm     = qs('.search_box');
 
+let searchDebounceTimer;
+
+async function runSearch(query) {
+    currentSearch = query;
+
+    if (!query.trim()) {
+        applyFilter();
+        return;
+    }
+
+    const results = await smartSearch(query);
+
+    if (results && results.length > 0) {
+        renderProducts(mapResultsToProducts(results));
+    } else if (results && results.length === 0) {
+        renderProducts([]); // genuinely no matches
+    } else {
+        // results === null → API was unreachable, fall back to local filter
+        applyFilter();
+    }
+}
+
 searchInput?.addEventListener('input', () => {
-    currentSearch = searchInput.value;
-    applyFilter();
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(() => runSearch(searchInput.value), 300);
 });
 searchForm?.addEventListener('submit', e => {
     e.preventDefault();
-    currentSearch = searchInput?.value || '';
-    applyFilter();
+    clearTimeout(searchDebounceTimer);
+    runSearch(searchInput?.value || '');
 });
 
 // ✅ Category select (top bar)
@@ -288,5 +365,36 @@ qs('#signup-form')?.addEventListener('submit', e => {
     closeModal();
 });
 
+//  10. RECOMMENDATIONS (optional)
+// Renders "You might also like" into an element with id
+// "recommendations-grid", IF one exists in your HTML. Safely does
+// nothing if that section doesn't exist yet.
+//
+// NOTE: pass the real logged-in user's id here once it's available
+// on the page (e.g. a STORE_USER_ID global set by the PHP template).
+// "guest" is a placeholder that just demonstrates it working.
+async function loadRecommendations(userId = 'guest') {
+    const container = qs('#recommendations-grid');
+    if (!container) return;
+
+    const recs = await getRecommendations(userId);
+    const products = mapResultsToProducts(recs);
+
+    if (products.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+
+    container.innerHTML = products.map(p => `
+        <div class="product-item" data-id="${p.id}">
+            <div class="product-img"><img src="${p.img || 'img/logo.png'}" alt="${p.name}" loading="lazy"></div>
+            <div class="product-info">
+                <h4 class="product-name">${p.name}</h4>
+                <span class="price">$${p.price}</span>
+            </div>
+        </div>`).join('');
+}
+
 //  INIT
 loadProducts();
+loadRecommendations();
