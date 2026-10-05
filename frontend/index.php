@@ -50,16 +50,16 @@ $storeUserEmail =
 */
 
 $loginUrl =
-    '../account/login.php';
+    is_file(__DIR__ . '/account/login.php') ? 'account/login.php' : '../account/login.php';
 
 $registerUrl =
-    '../account/register.php';
+    is_file(__DIR__ . '/account/register.php') ? 'account/register.php' : '../account/register.php';
 
 $checkoutUrl =
-    '../account/checkout.php';
+    is_file(__DIR__ . '/account/checkout.php') ? 'account/checkout.php' : '../account/checkout.php';
 
 $logoutUrl =
-    '../account/logout.php';
+    is_file(__DIR__ . '/account/logout.php') ? 'account/logout.php' : '../account/logout.php';
 
 
 /*

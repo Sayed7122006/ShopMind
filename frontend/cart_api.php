@@ -1,7 +1,24 @@
 <?php
 session_start();
 header('Content-Type: application/json; charset=utf-8');
-require_once dirname(__DIR__, 3) . '/fun/db_connection.php';
+// Load database connection
+$dbCandidates = [
+    __DIR__ . '/fun/db_connection.php',
+    __DIR__ . '/../fun/db_connection.php',
+    __DIR__ . '/../backend/fun/db_connection.php',
+    dirname(__DIR__) . '/backend/fun/db_connection.php',
+    dirname(__DIR__, 2) . '/backend/fun/db_connection.php',
+    dirname(__DIR__, 3) . '/fun/db_connection.php'
+];
+foreach ($dbCandidates as $file) {
+    if (file_exists($file)) {
+        require_once $file;
+        break;
+    }
+}
+if (!isset($conn) || !$conn) {
+    respond(500, ['error' => 'Database connection failed.']);
+}
 
 function respond($status, $payload) {
     http_response_code($status);
