@@ -6,11 +6,15 @@ before the Backend/database is ready. Run this once to create
 interactions.csv and products.csv in this folder.
 """
 
+import json
+import os
 import random
 import pandas as pd
 from datetime import datetime, timedelta
 
 random.seed(42)
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 PRODUCTS = [
     ("p1", "Wireless Headphones", "Over-ear bluetooth headphones with noise cancellation"),
@@ -24,6 +28,21 @@ PRODUCTS = [
     ("p9", "Bluetooth Speaker", "Portable waterproof bluetooth speaker"),
     ("p10", "Office Chair", "Ergonomic office chair with lumbar support"),
 ]
+
+def load_real_products():
+    """Use the frontend's products.json (copied into this folder) if present,
+    so the fake interactions/reviews refer to the REAL product ids."""
+    path = os.path.join(BASE_DIR, "products.json")
+    if not os.path.exists(path):
+        return None
+    from data_loader import load_products_from_json
+    df = load_products_from_json(path)
+    return [(str(r.product_id), r.name, r.description) for r in df.itertuples()]
+
+
+REAL_PRODUCTS = load_real_products()
+if REAL_PRODUCTS:
+    PRODUCTS = REAL_PRODUCTS
 
 USERS = [f"u{i}" for i in range(1, 21)]
 ACTIONS = ["view", "add_to_cart", "purchase"]

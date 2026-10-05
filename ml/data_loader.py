@@ -14,11 +14,17 @@ Expected columns in the products data (needed for Smart Search):
     product_id   -> str or int
     name         -> str, product name
     description  -> str, product description (optional but improves search)
+
+Expected columns in the reviews data (needed for Review Sentiment Analysis):
+    product_id   -> str or int
+    review_text  -> str, the customer's written review
+    rating       -> 1-5 (optional)
+    user_id, review_id, timestamp -> optional, not used by the model
 """
 
 import json
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 
 # ---------------------------------------------------------------------------
@@ -36,6 +42,30 @@ def load_products_from_csv(path: str) -> pd.DataFrame:
     return df
 
 
+def load_reviews_from_csv(path: str) -> pd.DataFrame:
+    """Load product reviews from a CSV file."""
+    return pd.read_csv(path)
+
+
+# The frontend's products.json has no description field, only a category. Smart
+# Search works much better with a few descriptive words than with the name
+# alone (e.g. so "phone" finds "Redmi 13C Dual SIM"), so we derive a fallback
+# description from the category.
+CATEGORY_KEYWORDS = {
+    "mobiles": "mobile phone smartphone",
+    "electronics": "electronics device gadget",
+    "appliances": "home appliance kitchen household",
+}
+
+
+def _description_from_category(category) -> str:
+    if not isinstance(category, str) or not category.strip():
+        return ""
+    category = category.strip()
+    keywords = CATEGORY_KEYWORDS.get(category.lower(), "")
+    return f"{category} {keywords}".strip()
+
+
 # ---------------------------------------------------------------------------
 # Option C: Load products straight from the frontend's products.json
 # ---------------------------------------------------------------------------
@@ -46,8 +76,9 @@ def load_products_from_json(path: str) -> pd.DataFrame:
     Handles both a top-level list of products, and a dict with the list
     under a "products" key. Column names are normalized to what the rest
     of the ML code expects: product_id, name, description.
-    Missing fields (e.g. no description yet) are filled with an empty string
-    so Smart Search doesn't break.
+    If there is no description, one is derived from the category field
+    ("categories" / "category") so Smart Search has more than the name to
+    work with; if there is no category either, it is an empty string.
     """
     with open(path, "r", encoding="utf-8") as f:
         raw = json.load(f)
@@ -73,7 +104,11 @@ def load_products_from_json(path: str) -> pd.DataFrame:
     df = df.rename(columns=rename_map)
 
     if "description" not in df.columns:
-        df["description"] = ""
+        category_col = next((c for c in ("categories", "category") if c in df.columns), None)
+        if category_col:
+            df["description"] = df[category_col].map(_description_from_category)
+        else:
+            df["description"] = ""
 
     return df[["product_id", "name", "description"] + [
         c for c in df.columns if c not in ("product_id", "name", "description")
@@ -97,59 +132,31 @@ def get_engine(connection_string: str):
 
 def load_interactions_from_sql(connection_string: str, since: str = None) -> pd.DataFrame:
     """
-    Load interaction events from a generic 'interactions' table, if one
-    exists. Most ShopMind-style schemas won't have this -- use
-    load_interactions_from_shopmind_sql() instead.
+    Load interaction events from the operational database.
+
+    since: optional ISO date string (e.g. "2026-01-01") to only pull recent rows.
     """
     engine = get_engine(connection_string)
-    query = "SELECT user_id, product_id, action, timestamp FROM interactions"
+    # Parameterized query: never build SQL by pasting user input into a string.
     if since:
-        query += f" WHERE timestamp > '{since}'"
+        query = text(
+            "SELECT user_id, product_id, action, timestamp FROM interactions "
+            "WHERE timestamp > :since"
+        )
+        return pd.read_sql(query, engine, params={"since": since})
+    query = text("SELECT user_id, product_id, action, timestamp FROM interactions")
     return pd.read_sql(query, engine)
 
 
-def load_interactions_from_shopmind_sql(connection_string: str) -> pd.DataFrame:
-    """
-    Build an interactions table from ShopMind's real schema: there's no
-    dedicated event-log table, but there IS a real `cart` table (current
-    add-to-cart state per user) and real `orders` + `order_items` tables
-    (completed purchases). We combine both into the same
-    [user_id, product_id, action, timestamp] shape the rest of the ML
-    code expects.
-
-    Note: `cart` only reflects CURRENT cart contents (items get deleted
-    on removal/checkout), not a full history -- still a real signal,
-    just not as rich as a proper event log would be.
-    """
-    engine = get_engine(connection_string)
-
-    cart_df = pd.read_sql(
-        """
-        SELECT user_id, product_id, 'add_to_cart' AS action, NOW() AS timestamp
-        FROM cart
-        """,
-        engine,
-    )
-
-    purchases_df = pd.read_sql(
-        """
-        SELECT u.id AS user_id, oi.product_id, 'purchase' AS action, o.order_date AS timestamp
-        FROM orders o
-        JOIN order_items oi ON oi.order_id = o.id
-        JOIN users u ON u.Email = o.user_email
-        """,
-        engine,
-    )
-
-    return pd.concat([cart_df, purchases_df], ignore_index=True)
-
-
 def load_products_from_sql(connection_string: str) -> pd.DataFrame:
-    """
-    Load the product catalog from ShopMind's real `products` table.
-    No `description` column exists in this schema, so Smart Search runs
-    on product name alone (clean_products() fills description with "").
-    """
+    """Load the product catalog from the operational database."""
     engine = get_engine(connection_string)
-    query = "SELECT id AS product_id, name, category FROM products"
+    query = "SELECT product_id, name, description FROM products"
+    return pd.read_sql(query, engine)
+
+
+def load_reviews_from_sql(connection_string: str) -> pd.DataFrame:
+    """Load product reviews from the operational database."""
+    engine = get_engine(connection_string)
+    query = text("SELECT product_id, review_text, rating FROM reviews")
     return pd.read_sql(query, engine)

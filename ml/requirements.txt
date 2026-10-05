@@ -2,6 +2,8 @@ pandas
 numpy
 scikit-learn
 sentence-transformers
+transformers
+torch
 sqlalchemy
 psycopg2-binary
 fastapi

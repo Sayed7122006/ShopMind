@@ -1,0 +1,19 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Secrets / config
+.env
+
+# Downloaded model caches (re-downloaded automatically)
+.cache/
+huggingface/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.log

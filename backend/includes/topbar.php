@@ -523,62 +523,38 @@ if (session_status() === PHP_SESSION_NONE) {
                     href="#"
                 >
 
-                    <div class="dropdown-list-image mr-3">
-
-                        <img
-                            class="rounded-circle"
-                            src="/ShopMind-main/img/undraw_profile_1.svg"
-                            alt="Profile"
-                        >
-
+                    <div class="dropdown-list-image mr-3 d-flex align-items-center justify-content-center">
+                        <i class="fas fa-user-circle fa-2x text-info"></i>
                         <div class="status-indicator bg-success"></div>
-
                     </div>
 
                     <div class="font-weight-bold">
-
                         <div class="text-truncate">
                             Hi there! I am wondering if you can help me.
                         </div>
-
                         <div class="small">
                             Emily Fowler · 58m
                         </div>
-
                     </div>
-
                 </a>
-
 
                 <a
                     class="dropdown-item d-flex align-items-center"
                     href="#"
                 >
-
-                    <div class="dropdown-list-image mr-3">
-
-                        <img
-                            class="rounded-circle"
-                            src="/ShopMind-main/img/undraw_profile_2.svg"
-                            alt="Profile"
-                        >
-
+                    <div class="dropdown-list-image mr-3 d-flex align-items-center justify-content-center">
+                        <i class="fas fa-user-circle fa-2x text-success"></i>
                     </div>
 
                     <div>
-
                         <div class="text-truncate">
                             I have the photos that you ordered last month.
                         </div>
-
                         <div class="small">
                             Jae Chun · 1d
                         </div>
-
                     </div>
-
                 </a>
-
 
                 <a
                     class="dropdown-item text-center small"
@@ -586,21 +562,14 @@ if (session_status() === PHP_SESSION_NONE) {
                 >
                     Read More Messages
                 </a>
-
             </div>
-
         </li>
 
-
         <!-- DIVIDER -->
-
         <div class="topbar-divider d-none d-sm-block"></div>
 
-
         <!-- USER -->
-
         <li class="nav-item dropdown no-arrow">
-
             <a
                 class="nav-link dropdown-toggle d-flex align-items-center"
                 href="#"
@@ -610,20 +579,11 @@ if (session_status() === PHP_SESSION_NONE) {
                 aria-haspopup="true"
                 aria-expanded="false"
             >
-
                 <span class="mr-3 d-none d-lg-inline user-name">
-
                     <?= htmlspecialchars($_SESSION['name'] ?? 'User') ?>
-
                 </span>
 
-
-                <img
-                    class="img-profile rounded-circle"
-                    src="/ShopMind-main/img/undraw_profile.svg"
-                    alt="Profile"
-                >
-
+                <i class="fas fa-user-circle fa-2x text-gray-400"></i>
             </a>
         </li>
 

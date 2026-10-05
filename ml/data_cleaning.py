@@ -50,10 +50,15 @@ def clean_products(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
 
     df = df.dropna(subset=["product_id", "name"])
-    df["description"] = df.get("description", "").fillna("")
+    # Note: df.get("description", "") returns a plain str when the column is
+    # missing, and str has no .fillna() -- so handle the missing-column case
+    # explicitly instead.
+    if "description" not in df.columns:
+        df["description"] = ""
+    df["description"] = df["description"].fillna("").astype(str)
 
     df["product_id"] = df["product_id"].astype(str)
-    df["name"] = df["name"].str.strip()
+    df["name"] = df["name"].astype(str).str.strip()
     df["description"] = df["description"].str.strip()
 
     return df.reset_index(drop=True)
@@ -75,3 +80,31 @@ def build_user_item_matrix(interactions: pd.DataFrame) -> pd.DataFrame:
         .unstack(fill_value=0)
     )
     return matrix
+
+
+def clean_reviews(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Clean the raw product reviews (input for Review Sentiment Analysis).
+
+    Steps:
+      1. Drop rows missing a product_id or review_text.
+      2. Strip whitespace and drop reviews that are empty after stripping.
+      3. Drop duplicate reviews (same text on the same product).
+      4. Make product_id a string (matches products / interactions).
+      5. If a rating column exists, coerce it to numeric and blank out
+         anything outside 1-5 instead of letting a bad value skew averages.
+    """
+    df = df.copy()
+
+    df = df.dropna(subset=["product_id", "review_text"])
+    df["review_text"] = df["review_text"].astype(str).str.strip()
+    df = df[df["review_text"] != ""]
+    df = df.drop_duplicates(subset=["product_id", "review_text"])
+
+    df["product_id"] = df["product_id"].astype(str)
+
+    if "rating" in df.columns:
+        df["rating"] = pd.to_numeric(df["rating"], errors="coerce")
+        df["rating"] = df["rating"].where(df["rating"].between(1, 5))
+
+    return df.reset_index(drop=True)

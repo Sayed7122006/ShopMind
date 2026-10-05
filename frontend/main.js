@@ -53,7 +53,11 @@ async function getRecommendations(userId, topN = 5) {
 function mapResultsToProducts(results) {
     if (!results) return [];
     return results
-        .map(r => allProducts.find(p => String(p.id) === String(r.product_id)))
+        .map(r => {
+            return allProducts.find(p => String(p.id) === String(r.product_id))
+                || allProducts.find(p => Number(p.id) === Number(r.product_id) + 1)
+                || allProducts.find(p => p.name.trim().toLowerCase() === (r.name || '').trim().toLowerCase());
+        })
         .filter(Boolean); // drop any that aren't found locally
 }
 

@@ -1,10 +1,11 @@
 # ML Module — E-commerce Project (TPT-Project)
 
-Implements the two required AI/ML Engineer deliverables:
+Implements the AI/ML Engineer deliverables (the plan requires at least 2; we ship 3):
 1. **Recommendation System** — item-based collaborative filtering (`recommender.py`)
 2. **Smart Search** — semantic product search with sentence embeddings (`search.py`)
+3. **Review Sentiment Analysis** — transformer sentiment classifier + per-product review summary (`sentiment.py`)
 
-Both are served through a FastAPI app (`api.py`) that the Frontend team can call directly.
+All three are served through a FastAPI app (`api.py`) that the Frontend team can call directly.
 
 ## Setup
 
@@ -25,7 +26,15 @@ python sample_data.py
 ```
 
 This creates `interactions.csv` and `products.csv` in this folder with realistic-looking
-fake events, so you can test every script before the Backend is ready.
+fake events, so you can test every script before the Backend is ready. Then generate the
+sample reviews (they reference the product ids `p1`..`p10` from the step above):
+
+```bash
+python sample_reviews.py
+```
+
+This creates `reviews.csv`. If it is missing, the API still starts — the review endpoints
+simply report "no reviews".
 
 ## 2. Run the API
 
@@ -36,18 +45,29 @@ uvicorn api:app --reload --port 8001
 Then open:
 - `http://127.0.0.1:8001/recommend/u1` — recommended products for user u1
 - `http://127.0.0.1:8001/search?q=shoes+for+running` — semantic search
+- `http://127.0.0.1:8001/sentiment?text=I+love+this+product` — sentiment of any text
+- `http://127.0.0.1:8001/products/p1/review-summary` — review summary for one product
+- `http://127.0.0.1:8001/review-summaries` — sentiment verdict for every product, most-liked first
+- `http://127.0.0.1:8001/docs` — interactive Swagger UI for every endpoint
+
+The first start downloads two small pretrained models (the sentence-embedding model and the
+DistilBERT sentiment model); this needs an internet connection once, then they are cached.
 
 ## Using the real product catalog
 
-Drop the frontend's real `products.json` into this folder (same name). The API
-automatically uses it instead of the sample `products.csv` if it's present —
-no code changes needed. Works even if it has no `description` field.
+`products.json` (copied from `frontend/products.json`) is already in this folder, and the API
+uses it automatically instead of the sample `products.csv`. The real file has no `description`
+field, so `data_loader.py` builds one from the category (e.g. `mobiles` -> "mobiles mobile phone
+smartphone") to give Smart Search more than the product name to work with. If the frontend adds
+real descriptions later, they are used as-is. Keep the file in sync by re-copying it whenever the
+frontend catalog changes, then restart the server.
 
-There's currently no real interaction-tracking data (the frontend cart/wishlist
-is client-side only, not sent to a backend yet), so the Recommender keeps using
-the generated sample `interactions.csv` until that exists. This is a reasonable
-stand-in for a demo/submission: the Smart Search runs on real product data, and
-the Recommender demonstrates the full working approach on realistic synthetic data.
+There is still no real interaction-tracking data (the frontend cart/wishlist is client-side
+only), so `python sample_data.py` generates fake interactions and `python sample_reviews.py` fake
+reviews, **using the real product ids from `products.json`** (so recommendations and review
+summaries work for the real catalog). Re-run both after the catalog changes. Smart Search runs on
+the real product data; the Recommender and Sentiment models demonstrate the full approach on
+synthetic data until the Backend provides real events and reviews.
 
 ## 3. Switching to real data later
 
@@ -76,12 +96,39 @@ write access for this.
 
 | File | Purpose |
 |---|---|
-| `data_loader.py` | Loads raw data from CSV or SQL |
+| `data_loader.py` | Loads raw data (interactions, products, reviews) from CSV, JSON or SQL |
 | `data_cleaning.py` | Cleans data + builds the user-item matrix |
 | `recommender.py` | Model 1: Recommendation System |
 | `search.py` | Model 2: Smart Search |
-| `api.py` | FastAPI app exposing both models |
-| `sample_data.py` | Generates fake test data |
+| `sentiment.py` | Model 3: Review Sentiment Analysis |
+| `api.py` | FastAPI app exposing all three models |
+| `sample_data.py` | Generates fake interactions + products |
+| `sample_reviews.py` | Generates fake product reviews |
+| `check_sentiment.py` | Runs the REAL sentiment model on known sentences + prints every product's verdict |
+| `tests/` | Unit tests (pytest) |
+
+## Review Sentiment Analysis
+
+`sentiment.py` classifies each review with `distilbert-base-uncased-finetuned-sst-2-english`.
+That model is binary (positive/negative), so predictions with confidence below 0.6 are
+reported as `neutral`. Per product, `/products/{id}/review-summary` returns the
+positive/negative/neutral counts, an overall verdict (`positive` / `mixed` / `negative`), the
+average star rating, and the most confident positive and negative reviews as an extractive
+summary.
+
+To verify the real model works on your machine: `python check_sentiment.py` (prints PASS/FAIL per
+test sentence, then the positive/negative verdict of every product).
+
+## Running the tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
+The tests use small fake models, so they run offline and fast. `test_search.py` and
+`test_api.py` need `torch` + `sentence-transformers` installed (they are skipped otherwise).
+`test_api.py` expects the sample data files (`products.csv`, `interactions.csv`, `reviews.csv`).
 
 ## Notes
 - The recommender uses weighted interactions: `purchase` > `add_to_cart` > `view`.

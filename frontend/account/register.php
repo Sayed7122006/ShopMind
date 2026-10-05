@@ -2004,12 +2004,12 @@ body {
         <!-- LOGO -->
 
         <a
-            href="../frontend/index.php"
+            href="../index.php"
             class="store-logo"
         >
 
             <img
-                src="../frontend/img/new_logo.jpg"
+                src="../img/new_logo.jpg"
                 alt="FINDO Logo"
             >
 
