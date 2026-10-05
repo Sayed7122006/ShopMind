@@ -32,17 +32,57 @@ try {
     $products = [];
     while ($row = mysqli_fetch_assoc($result)) {
         $id = (int)$row['id'];
-        $imgIndex = $id - 1;
-        $localPath = "img/product/{$imgIndex}.png";
-        
-        if (file_exists(__DIR__ . '/' . $localPath)) {
-            $imageSrc = $localPath;
-        } elseif (file_exists(__DIR__ . "/img/product/{$id}.png")) {
-            $imageSrc = "img/product/{$id}.png";
-        } elseif (!empty($row['img']) && str_starts_with($row['img'], "\x89PNG")) {
-            $imageSrc = 'data:image/png;base64,' . base64_encode($row['img']);
-        } else {
-            $imageSrc = 'img/logo.png';
+        $imageSrc = '';
+
+        // 1. Check if img column is a valid file path
+        if (!empty($row['img']) && is_string($row['img']) && strlen($row['img']) < 255) {
+            $cleanPath = ltrim($row['img'], '/');
+            if (file_exists(__DIR__ . '/' . $cleanPath)) {
+                $imageSrc = $cleanPath;
+            }
+        }
+
+        // 2. Check if img column is binary image data (BLOB)
+        if (!$imageSrc && !empty($row['img'])) {
+            $blob = $row['img'];
+            $mime = null;
+            if (str_starts_with($blob, "\x89PNG")) {
+                $mime = 'image/png';
+            } elseif (str_starts_with($blob, "\xFF\xD8\xFF")) {
+                $mime = 'image/jpeg';
+            } elseif (str_starts_with($blob, "RIFF") && str_contains(substr($blob, 8, 8), "WEBP")) {
+                $mime = 'image/webp';
+            } elseif (str_starts_with($blob, "GIF8")) {
+                $mime = 'image/gif';
+            } elseif (function_exists('finfo_open')) {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $detected = finfo_buffer($finfo, substr($blob, 0, 1024));
+                finfo_close($finfo);
+                if ($detected && str_starts_with($detected, 'image/')) {
+                    $mime = $detected;
+                }
+            }
+            if ($mime) {
+                $imageSrc = "data:{$mime};base64," . base64_encode($blob);
+            }
+        }
+
+        // 3. Fallback to existing product images on disk
+        if (!$imageSrc) {
+            $imgIndex = $id - 1;
+            if (file_exists(__DIR__ . "/img/product/{$imgIndex}.png")) {
+                $imageSrc = "img/product/{$imgIndex}.png";
+            } elseif (file_exists(__DIR__ . "/img/product/{$id}.png")) {
+                $imageSrc = "img/product/{$id}.png";
+            } else {
+                // Check if any prod_{id}.* exists
+                $matches = glob(__DIR__ . "/img/product/prod_{$id}.*");
+                if (!empty($matches)) {
+                    $imageSrc = "img/product/" . basename($matches[0]);
+                } else {
+                    $imageSrc = 'img/logo.png';
+                }
+            }
         }
 
         $products[] = [

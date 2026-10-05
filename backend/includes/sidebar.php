@@ -288,7 +288,7 @@ function shopmind_url($path = '')
 
         <a
             class="nav-link"
-            href="<?= shopmind_url('ShopMind-main/ShopMind-main/frontend/index.php') ?>"
+            href="/ShopMind/frontend/index.php"
             target="_blank"
         >
 

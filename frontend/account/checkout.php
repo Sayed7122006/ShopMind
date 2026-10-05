@@ -78,12 +78,12 @@ while ($row = mysqli_fetch_assoc($result)) { $items[] = $row; $total += (float)$
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Checkout | ShopMind</title>
 <style>body{font-family:Arial,sans-serif;background:#f5f7fa;margin:0;color:#222}.wrap{max-width:760px;margin:40px auto;padding:24px;background:#fff;border-radius:12px;box-shadow:0 4px 20px #0001}h1{margin-top:0}.item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee}.total{font-size:20px;font-weight:bold;text-align:right;padding:18px 0}.btn{background:#198754;color:#fff;border:0;border-radius:7px;padding:12px 20px;font-size:16px;cursor:pointer}.back{display:inline-block;margin-left:10px;color:#198754}.msg{padding:12px;background:#e8f7ee;color:#17653b;border-radius:7px}.err{padding:12px;background:#fff0f0;color:#9b2020;border-radius:7px}</style></head><body><main class="wrap">
 <h1>Checkout</h1><p>Signed in as <?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?></p>
-<?php if ($successOrderId): ?><div class="msg">Order #<?= (int)$successOrderId ?> placed successfully! Status: Pending.</div><p><a class="back" href="../frontend/index.php">Continue shopping</a></p>
+<?php if ($successOrderId): ?><div class="msg">Order #<?= (int)$successOrderId ?> placed successfully! Status: Pending.</div><p><a class="back" href="../index.php">Continue shopping</a></p>
 <?php else: ?>
 <?php if ($error): ?><p class="err"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p><?php endif; ?>
-<?php if (!$items): ?><p>Your cart is empty.</p><a class="back" href="../frontend/index.php">Back to store</a>
+<?php if (!$items): ?><p>Your cart is empty.</p><a class="back" href="../index.php">Back to store</a>
 <?php else: ?>
 <?php foreach ($items as $item): ?><div class="item"><span><?= htmlspecialchars($item['name'], ENT_QUOTES, 'UTF-8') ?> × <?= (int)$item['quantity'] ?></span><strong>$<?= number_format((float)$item['price'] * (int)$item['quantity'], 2) ?></strong></div><?php endforeach; ?>
 <div class="total">Total: $<?= number_format($total, 2) ?></div>
-<form method="post"><button class="btn" type="submit" name="place_order" value="1">Place Order</button><a class="back" href="../frontend/index.php">Back to store</a></form>
+<form method="post"><button class="btn" type="submit" name="place_order" value="1">Place Order</button><a class="back" href="../index.php">Back to store</a></form>
 <?php endif; ?><?php endif; ?></main></body></html>
