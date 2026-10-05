@@ -15,7 +15,8 @@ Endpoints:
     GET /review-summaries
 """
  
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
  
@@ -85,9 +86,152 @@ review_sentiment = ReviewSentiment(reviews)
 PRODUCT_NAMES = dict(zip(products["product_id"], products["name"]))
  
  
-@app.get("/")
-def root():
-    return {"status": "ok", "message": "E-commerce ML API is running"}
+@app.get("/", response_class=HTMLResponse)
+def root(request: Request):
+    accept = request.headers.get("accept", "")
+    if "application/json" in accept and "text/html" not in accept:
+        return JSONResponse({"status": "ok", "message": "E-commerce ML API is running"})
+
+    html_content = """<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopMind AI Engine</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 35px;
+            max-width: 620px;
+            width: 100%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+        .badge {
+            display: inline-block;
+            background: #10b981;
+            color: #fff;
+            font-weight: bold;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin: 0 0 12px 0;
+            font-size: 26px;
+            color: #38bdf8;
+        }
+        p {
+            color: #94a3b8;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        .status-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            text-align: right;
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        .ok-text {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .btn {
+            display: block;
+            padding: 13px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+        .btn-store {
+            background: #2563eb;
+            color: #fff;
+        }
+        .btn-store:hover {
+            background: #1d4ed8;
+        }
+        .btn-admin {
+            background: #475569;
+            color: #fff;
+        }
+        .btn-admin:hover {
+            background: #334155;
+        }
+        .btn-docs {
+            background: #0284c7;
+            color: #fff;
+        }
+        .btn-docs:hover {
+            background: #0369a1;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="badge">● محرك الذكاء الاصطناعي متصل ويعمل (Port 8001)</div>
+        <h1>ShopMind AI & Machine Learning Service</h1>
+        <p>هذا هو المحرك البرمجي الخلفي (AI Engine) الخاص بمتجر <strong>ShopMind</strong> لتشغيل ميزات الذكاء الاصطناعي تلقائياً داخل المتجر.</p>
+        
+        <div class="status-box">
+            <div class="status-item">
+                <span>البحث الذكي الدلالي (Smart Semantic Search):</span>
+                <span class="ok-text">نشط ومفعل ✓</span>
+            </div>
+            <div class="status-item">
+                <span>نظام التوصيات (Product Recommender):</span>
+                <span class="ok-text">نشط ومفعل ✓</span>
+            </div>
+            <div class="status-item">
+                <span>تحليل آراء وتقييمات العملاء (Sentiment Analysis):</span>
+                <span class="ok-text">نشط ومفعل ✓</span>
+            </div>
+        </div>
+
+        <div class="links">
+            <a class="btn btn-store" href="http://localhost/ShopMind/frontend/index.php">🛒 الدخول إلى متجر ShopMind الرئيسي</a>
+            <a class="btn btn-admin" href="http://localhost/ShopMind/backend/index.php">⚙️ لوحة إدارة المتجر (Admin Dashboard)</a>
+            <a class="btn btn-docs" href="/docs">📖 تصفح واجهات الـ API التفاعلية (Swagger UI)</a>
+        </div>
+    </div>
+</body>
+</html>"""
+    return HTMLResponse(content=html_content)
  
  
 @app.get("/recommend/{user_id}")
